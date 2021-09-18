@@ -209,7 +209,11 @@ class MethodCallImpl(
             permissioncode
         )
         else {
-            Toast.makeText(context, "Please Enable$manifestpermission", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context,
+                "Please Enable${manifestpermission.replace("manifest.", "")}",
+                Toast.LENGTH_LONG
+            ).show()
             connecteddevice.openAppSettings(
                 context,
                 object : AndroidIpPlugin.OpenAppSettingsSuccessCallback {
