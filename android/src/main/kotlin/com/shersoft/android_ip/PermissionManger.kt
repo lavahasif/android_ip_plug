@@ -1,10 +1,13 @@
 package com.shersoft.android_ip
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Environment
+import android.provider.Settings
+
 
 class PermissionManger(val activity: Activity) :
     io.flutter.plugin.common.PluginRegistry.ActivityResultListener,
@@ -17,6 +20,27 @@ class PermissionManger(val activity: Activity) :
 
     companion object {
         val ACCESS_FINE_LOCATION_CODE = 100
+        val ACCESS_FINE_STORAGE_CODE = 102
+    }
+
+
+    fun setManageExternal() {
+        if (SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    val uri = Uri.parse("package:${activity.getPackageName()}")
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        uri
+                    );
+                    activity.startActivity(intent);
+                } catch (e: Exception) {
+                    val intent = Intent();
+                    intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    activity.startActivity(intent);
+                };
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -45,6 +69,8 @@ class PermissionManger(val activity: Activity) :
                 }
 
             }
+        } else if (requestCode == ACCESS_FINE_STORAGE_CODE) {
+            setManageExternal();
         }
         return true;
     }

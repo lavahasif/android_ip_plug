@@ -91,6 +91,14 @@ class AndroidIp {
     return await _channel.invokeMethod('SetHotspotDisable');
   }
 
+  static Future<void> get SetExternalStorage async {
+    return await _channel.invokeMethod('SetExternalStorage');
+  }
+
+  static Future<void> get EnableStoragePermission async {
+    return await _channel.invokeMethod('EnableStoragePermission');
+  }
+
   static Future<String?> get IpAddress_Wifi_tetherorwifi async {
     final String? version =
         await _channel.invokeMethod('Wifi_tetherorWifi', {'key': 'true'});

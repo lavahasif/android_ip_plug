@@ -255,6 +255,13 @@ class _MyAppState extends State<MyApp> {
                     await AndroidIp.EnablePermission;
                   },
                 ),
+                RaisedButton(
+                  color: Colors.blue,
+                  child: Text("Storage"),
+                  onPressed: () async {
+                    await AndroidIp.EnableStoragePermission;
+                  },
+                ),
               ],
             ),
           ],

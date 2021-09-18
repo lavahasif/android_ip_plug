@@ -19,9 +19,11 @@ class MethodCallImpl(
     val enableDevice: EnableDevice,
     val sharefile: ShareFile,
     val myIp: MyIp
-) : MethodChannel.MethodCallHandler {
 
+) : MethodChannel.MethodCallHandler {
+    var permissionmanger: PermissionManger? = null
     var mactivity: Activity? = null
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         connecteddevice
 
@@ -79,7 +81,43 @@ class MethodCallImpl(
                         )
                     }
                 })
-            NetWork_Interface_enum.EnablePermission -> setPermissions(result)
+            NetWork_Interface_enum.EnablePermission -> setPermissions(
+                result,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                PermissionManger.ACCESS_FINE_LOCATION_CODE
+            )
+            NetWork_Interface_enum.EnableStoragePermission -> {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val ispermi = (ContextCompat.checkSelfPermission(
+                        mactivity!!,
+                        Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
+                        mactivity!!,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED)
+                    if (!ispermi) {
+
+                        permissionmanger?.setManageExternal()
+
+                    } else {
+                        setPermissions(
+                            result,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            PermissionManger.ACCESS_FINE_STORAGE_CODE
+                        )
+
+                    }
+                } else {
+                    setPermissions(
+                        result,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        PermissionManger.ACCESS_FINE_STORAGE_CODE
+                    )
+                }
+
+
+            }
             NetWork_Interface_enum.getssid -> result.success(connecteddevice.getSsid())
             NetWork_Interface_enum.networkresult -> settypeSafe(result)
             NetWork_Interface_enum.EnableWifi -> enableDevice.setWifiEnable()
@@ -94,6 +132,7 @@ class MethodCallImpl(
 
             })
             NetWork_Interface_enum.SetHotspotDisable -> enableDevice.turnOffHotspot()
+            NetWork_Interface_enum.SetExternalStorage -> permissionmanger?.setManageExternal()
             NetWork_Interface_enum.IsLocationEnabled -> result.success(
                 if (ActivityCompat.checkSelfPermission(
                         context,
@@ -141,26 +180,62 @@ class MethodCallImpl(
     }
 
 
-    private fun setPermissions(result: MethodChannel.Result) {
-        val accessFineLocation = Manifest.permission.ACCESS_FINE_LOCATION
+    private fun setPermissions(
+        result: MethodChannel.Result,
+        manifestpermission: String,
+        permissioncode: Int
+    ) {
+        val accessFineLocation = manifestpermission
         if (ContextCompat.checkSelfPermission(mactivity!!, accessFineLocation)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    mactivity!!,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            )
-                ActivityCompat.requestPermissions(
-                    mactivity!!,
-                    arrayOf(accessFineLocation),
-                    PermissionManger.ACCESS_FINE_LOCATION_CODE
-                );
-            else {
-                Toast.makeText(context, "Please EnableLocation", Toast.LENGTH_LONG).show()
-
-            }
+            setPermissionRaionale(manifestpermission, accessFineLocation, permissioncode)
         }
+    }
+
+    private fun setPermissionRaionale(
+        manifestpermission: String,
+        accessFineLocation: String,
+        permissioncode: Int
+    ) {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                mactivity!!,
+                manifestpermission
+            )
+        ) ActivityCompat.requestPermissions(
+            mactivity!!,
+            arrayOf(accessFineLocation),
+            permissioncode
+        )
+        else {
+            Toast.makeText(context, "Please Enable$manifestpermission", Toast.LENGTH_LONG).show()
+            connecteddevice.openAppSettings(
+                context,
+                object : AndroidIpPlugin.OpenAppSettingsSuccessCallback {
+                    override fun onSuccess(appSettingsOpenedSuccessfully: Boolean) {
+
+                    }
+
+                },
+                object : AndroidIpPlugin.ErrorCallback {
+                    override fun onError(errorCode: String?, errorDescription: String?) {
+
+                    }
+                })
+        }
+
+//            Toast.makeText(context, "Please EnableLocation", Toast.LENGTH_LONG).show()
+//        } else {
+//
+//            ActivityCompat.requestPermissions(
+//                mactivity!!,
+//                arrayOf(accessFineLocation),
+//                permissioncode
+//            );
+//
+//
+//        }
     }
 
     fun setActivity(activity: Activity) {

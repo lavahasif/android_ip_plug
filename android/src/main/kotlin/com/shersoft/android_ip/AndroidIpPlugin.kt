@@ -137,6 +137,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
         methodCallHandler?.mactivity = mactivity
         permissionmanger = PermissionManger(mactivity)
         mPermissionlistnerImp?.permissionmanger = permissionmanger;
+        methodCallHandler?.permissionmanger = permissionmanger
         if (permissionmanger != null) {
             binding.addRequestPermissionsResultListener(permissionmanger)
             binding.addActivityResultListener(permissionmanger)
