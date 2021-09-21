@@ -20,6 +20,9 @@ import kotlinx.coroutines.*
 import java.io.*
 import java.lang.reflect.Method
 import java.net.InetAddress
+import java.net.InetSocketAddress
+import java.net.Socket
+import java.net.SocketAddress
 
 
 open class ConnectedDevice(var contexts: Context) {
@@ -357,5 +360,158 @@ open class ConnectedDevice(var contexts: Context) {
         }
     }
 
+    val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    fun portbbyIp(
+        localhost: String,
+        port: Int,
+        timeout: Int,
+        array: ArrayList<Int>,
+        iDeviceConnected: AndroidIpPlugin.IPortScan
+    ) {
+
+
+        scope.launch {
+
+            if (pingHost(localhost, timeout) == 0) {
+                var output = (array[0]..array[1]).pmap {
+
+
+                    val map = portScan(localhost, it, timeout)
+//                    print(map)
+                    if (map["success"] == "true") {
+//                        print("=====s=>$map")
+                        iDeviceConnected.onSuccess(map);
+
+                    } else {
+//                        print("=====f=>$map")
+//                        iDeviceConnected.onError(map);
+                    }
+
+                }
+            };
+
+
+        }
+
+
+    }
+
+    fun portbbyIpCurrent(
+        localhost: String,
+        port: Int,
+        timeout: Int,
+        array: ArrayList<Int>,
+        iDeviceConnected: AndroidIpPlugin.IPortScan
+    ) {
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val split: MutableList<String> = localhost.split(".") as MutableList<String>
+
+
+        var ip = ""
+        split.forEach { ip += it + "." }
+        scope.launch {
+
+
+            var outputs = (0..255).pmap {
+
+
+                var ips = ip + "$it";
+
+                if (pingHost(ips, timeout) == 0) {
+                    var output = (array[0]..array[1]).pmap {
+
+
+                        val map = portScan(localhost, it, timeout)
+
+                        if (map["success"] == "true") {
+                            print("=====s=>$map")
+                            iDeviceConnected.onSuccess(map);
+
+                        } else {
+                            print("=====f=>$map")
+                            iDeviceConnected.onError(map);
+                        }
+
+                    }
+                };
+
+            }
+
+
+        }
+
+
+    }
+
+
+    fun portScan(localhost: String, port: Int, timeout: Int): Map<String, String> {
+        val map = HashMap<String, String>();
+
+
+        try {
+            val socket: Socket = Socket(localhost, port)
+            val address: SocketAddress? = InetSocketAddress(localhost, port)
+            socket.connect(address, timeout)
+
+
+            map.put("success", "true");
+            map.put("ip", localhost);
+            map.put("port", port.toString());
+            map.put("result", "");
+
+            //OPEN
+            socket.close()
+
+            return map;
+        }
+//        catch (e: UnknownHostException) {
+//            map.put("ip", localhost);
+//            map.put("success", "false");
+//            map.put("port", port.toString());
+//
+//            return map;
+//        }
+//        catch (e: SocketTimeoutException) {
+//            if (socket!!.isConnected) {
+//                map.put("success", "true");
+//                map.put("ip", localhost);
+//                map.put("port", port.toString());
+//                map.put("result", "");
+//                socket.close()
+//                return map;
+//            }
+//            map.put("success", "false");
+//            map.put("ip", localhost);
+//            map.put("port", port.toString());
+//
+//            return map;
+//        }
+//        catch (e: SocketException) {
+//
+//            map.put("success", "false");
+//            map.put("ip", localhost);
+//            map.put("port", port.toString());
+//            map.put("result", e.toString());
+//
+//            return map;
+//        }
+        catch (e: Exception) {
+            if (e.message.toString().contains("already connected")) {
+                map.put("success", "true");
+                map.put("ip", localhost);
+                map.put("port", port.toString());
+                map.put("result", "");
+//                socket.close()
+                return map;
+            } else {
+                map.put("success", "false");
+                map.put("ip", localhost);
+                map.put("port", port.toString());
+                map.put("result", e.toString());
+                return map;
+            }
+
+        }
+    }
 }
 

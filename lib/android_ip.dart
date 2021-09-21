@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:android_ip/pigeon.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,8 @@ class AndroidIp {
   static const EventChannel networklistner_channel =
       const EventChannel('networklistner');
   static const EventChannel share_channel = const EventChannel('sharelistner');
+  static const EventChannel portbyCurrent_channel =
+      const EventChannel('portbyCurrentchannel');
 
   static const EventChannel echannellist_channel =
       const EventChannel('echannellist');
@@ -16,7 +19,43 @@ class AndroidIp {
   Stream<String>? _onConnectivityChanged;
   Stream<String>? _onDeviceConnected;
   Stream<String>? _onShareProcess;
+  Stream<String>? _onportbyCurrent;
   Stream<PermissionResult>? _onPermissionChanged;
+  static const EventChannel portbyIp_channel =
+      const EventChannel('portbyIpchannel');
+  Stream<Map<String, dynamic>>? _onportbyIp;
+
+  Stream<Map<String, dynamic>>? get onPortbyIp {
+    var arguments = {
+      'ip': '192.168.70.156',
+      'port': '812',
+      'timeout': 50,
+      "porta": [1, 10000]
+    };
+    _onportbyIp = portbyIp_channel
+        .receiveBroadcastStream(arguments)
+        .map((event) => Map<String, dynamic>.from(event));
+    //     {
+    //   Map<String, dynamic> parameters = Map<String, dynamic>.from(event);
+    //   // print("==ff=>${parameters.values}");
+    //   return parameters;
+    // }
+    // ).skipWhile((element) => element["success"] == "false");
+    return _onportbyIp;
+  }
+
+  Stream<String>? get onPortbyCurrent {
+    var arguments = {
+      'ip': '192.168.70.156',
+      'port': '812',
+      'timeout': 500,
+      "porta": [1, 1000]
+    };
+    _onportbyCurrent = portbyCurrent_channel
+        .receiveBroadcastStream(arguments)
+        .map((event) => jsonDecode(event.toString()));
+    return _onportbyCurrent;
+  }
 
   Stream<String>? get onConnectivityChanged {
     _onConnectivityChanged = networklistner_channel
@@ -83,7 +122,7 @@ class AndroidIp {
   }
 
   static Future<Hotspot> get SetHotspotEnable async {
-    var name = await _channel.invokeMethod('SetHotspotEnable');
+    var name = await _channel.invokeMethod('SetHotspotEnable', {'key': 'true'});
     return Hotspot.decode(name);
   }
 
@@ -100,8 +139,13 @@ class AndroidIp {
   }
 
   static Future<String?> get IpAddress_Wifi_tetherorwifi async {
-    final String? version =
-        await _channel.invokeMethod('Wifi_tetherorWifi', {'key': 'true'});
+    final String? version = await _channel.invokeMethod('Wifi_tetherorWifi', {
+      'ip': '192.168.43.8',
+      'port': '812',
+      'timeout': 500,
+      "porta": [10, 80],
+      'key': 'true'
+    });
     return version;
   }
 

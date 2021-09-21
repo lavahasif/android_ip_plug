@@ -40,12 +40,16 @@ class _MyAppState extends State<MyApp> {
   late AndroidIp androidIp;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     androidIp = new AndroidIp();
     var listner = androidIp.onConnectivityChanged;
     var ondeviceconnected = androidIp.onDeviceConnected;
     permissionchanged();
+    androidIp.onPortbyIp!.listen((event) {
+      print(event);
+    });
+
     listner!.listen((event) {
       setState(() {
         _Connecton_change = event;
@@ -86,7 +90,7 @@ class _MyAppState extends State<MyApp> {
     try {
       networkResult = await AndroidIp.networkresult;
       IpAddress_Wifi_tether = (networkResult)!.wifi_tether ?? 'Unknown Number';
-
+      await AndroidIp.IpAddress_Wifi_tetherorwifi;
       await AndroidIp.getConnectedList ?? 'Unknown Number';
       IpAddress_Wifi_both = networkResult?.wifiboth ?? 'Unknown Number';
       IpAddress_Wifi = networkResult?.wifi ?? 'Unknown Number';
