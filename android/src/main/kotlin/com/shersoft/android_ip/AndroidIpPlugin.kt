@@ -145,6 +145,8 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
 
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        if (mNetworkListnerImp?.receiver != null)
+            context.unregisterReceiver(mNetworkListnerImp?.receiver)
         channel.setMethodCallHandler(null)
         echannel.setStreamHandler(null)
         echannellist.setStreamHandler(null)

@@ -21,6 +21,7 @@ class PermissionManger(val activity: Activity) :
     companion object {
         val ACCESS_FINE_LOCATION_CODE = 100
         val ACCESS_FINE_STORAGE_CODE = 102
+        val ACCESS_FINE_LOCATION = 103
     }
 
 

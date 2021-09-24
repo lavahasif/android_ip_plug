@@ -134,6 +134,10 @@ class AndroidIp {
     return await _channel.invokeMethod('SetExternalStorage');
   }
 
+  static Future<void> get getP2pNames async {
+    return await _channel.invokeMethod('getP2pNames');
+  }
+
   static Future<void> get EnableStoragePermission async {
     return await _channel.invokeMethod('EnableStoragePermission');
   }

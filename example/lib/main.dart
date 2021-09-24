@@ -91,6 +91,7 @@ class _MyAppState extends State<MyApp> {
       networkResult = await AndroidIp.networkresult;
       IpAddress_Wifi_tether = (networkResult)!.wifi_tether ?? 'Unknown Number';
       await AndroidIp.IpAddress_Wifi_tetherorwifi;
+      await AndroidIp.getP2pNames;
       await AndroidIp.getConnectedList ?? 'Unknown Number';
       IpAddress_Wifi_both = networkResult?.wifiboth ?? 'Unknown Number';
       IpAddress_Wifi = networkResult?.wifi ?? 'Unknown Number';
@@ -264,6 +265,13 @@ class _MyAppState extends State<MyApp> {
                   child: Text("Storage"),
                   onPressed: () async {
                     await AndroidIp.EnableStoragePermission;
+                  },
+                ),
+                RaisedButton(
+                  color: Colors.blue,
+                  child: Text("peer"),
+                  onPressed: () async {
+                    await AndroidIp.getP2pNames;
                   },
                 ),
               ],

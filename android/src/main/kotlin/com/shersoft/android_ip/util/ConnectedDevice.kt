@@ -26,8 +26,10 @@ import java.net.SocketAddress
 
 
 open class ConnectedDevice(var contexts: Context) {
+    lateinit var w2peer: W2peer
     init {
 //        EnableDevice(contexts)
+
     }
 
     fun isHotspotEnabled(): Boolean {
@@ -512,6 +514,11 @@ open class ConnectedDevice(var contexts: Context) {
             }
 
         }
+    }
+
+    fun getP2pNames() {
+        w2peer = W2peer(contexts)
+        w2peer.discoverPeers()
     }
 }
 

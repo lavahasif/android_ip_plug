@@ -133,6 +133,7 @@ class MethodCallImpl(
             })
             NetWork_Interface_enum.SetHotspotDisable -> enableDevice.turnOffHotspot()
             NetWork_Interface_enum.SetExternalStorage -> permissionmanger?.setManageExternal()
+            NetWork_Interface_enum.getP2pNames -> connecteddevice.getP2pNames()
             NetWork_Interface_enum.IsLocationEnabled -> result.success(
                 if (ActivityCompat.checkSelfPermission(
                         context,
