@@ -219,7 +219,7 @@ class _MyAppState extends State<MyApp> {
                   color: Colors.blue,
                   child: Text("Share Me"),
                   onPressed: () async {
-                    await AndroidIp.shareself;
+                    await AndroidIp.shareAPKFile;
                   },
                 ),
                 Text("status:$_status"),

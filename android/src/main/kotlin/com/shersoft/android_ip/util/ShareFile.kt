@@ -89,6 +89,7 @@ class ShareFile(var contexts: Context) {
         return true;
     }
 
+
     private fun ShareFile(
         context: Context,
         tempFile: File,
@@ -158,6 +159,46 @@ class ShareFile(var contexts: Context) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             contexts.startActivity(intent)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return true;
+    }
+
+    fun shareAPKFile(context: Context): Boolean {
+
+        val app: ApplicationInfo = context.applicationInfo
+        val originalApk = app.publicSourceDir
+        var tempFile: File = File(contexts.getExternalCacheDir().toString() + "/ExtractedApk")
+        try {
+
+            //If directory doesn't exists create new
+            if (!tempFile.isDirectory) if (!tempFile.mkdirs()) return false
+            //rename apk file to app name
+            tempFile =
+                File(
+                    tempFile.path + "/" + (app.processName.toString()).replace(
+                        ".",
+                        "_"
+                    ) + ".apk"
+                )
+            //If file doesn't exists create new
+            if (!tempFile.exists()) {
+                if (!tempFile.createNewFile()) {
+                    return false;
+                }
+            }
+            //Copy file to new location
+            val inp: InputStream = FileInputStream(originalApk)
+            val out: OutputStream = FileOutputStream(tempFile)
+            val buf = ByteArray(1024)
+            var len: Int
+            while (inp.read(buf).also { len = it } > 0) {
+                out.write(buf, 0, len)
+            }
+            inp.close()
+            out.close()
+
         } catch (e: IOException) {
             e.printStackTrace()
         }

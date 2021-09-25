@@ -94,6 +94,11 @@ class AndroidIp {
     return version;
   }
 
+  static Future<bool?> get shareAPKFile async {
+    final bool? version = await _channel.invokeMethod('shareAPKFile');
+    return version;
+  }
+
   static Future<bool?> get IsLocationEnabled async {
     final bool? version = await _channel.invokeMethod('IsLocationEnabled');
     return version;
