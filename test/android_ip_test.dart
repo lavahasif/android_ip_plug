@@ -1,6 +1,6 @@
+import 'package:android_util/android_ip.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:android_ip/android_ip.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('android_ip');

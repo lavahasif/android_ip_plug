@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:android_ip/android_ip.dart';
-import 'package:android_ip/pigeon.dart';
+import 'package:android_util/android_ip.dart';
+import 'package:android_util/pigeon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-
   runApp(MyApp());
 }
 
@@ -90,9 +89,9 @@ class _MyAppState extends State<MyApp> {
     try {
       networkResult = await AndroidIp.networkresult;
       IpAddress_Wifi_tether = (networkResult)!.wifi_tether ?? 'Unknown Number';
-      await AndroidIp.IpAddress_Wifi_tetherorwifi;
-      await AndroidIp.getP2pNames;
-      await AndroidIp.getConnectedList ?? 'Unknown Number';
+      // await AndroidIp.IpAddress_Wifi_tetherorwifi;
+      // await AndroidIp.getP2pNames;
+      // await AndroidIp.getConnectedList ?? 'Unknown Number';
       IpAddress_Wifi_both = networkResult?.wifiboth ?? 'Unknown Number';
       IpAddress_Wifi = networkResult?.wifi ?? 'Unknown Number';
       IpAddress_Private = await AndroidIp.IpAddress_Private ?? 'Unknown Number';

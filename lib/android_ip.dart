@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:android_ip/pigeon.dart';
+import 'package:android_util/pigeon.dart';
 import 'package:flutter/services.dart';
 
 class AndroidIp {
