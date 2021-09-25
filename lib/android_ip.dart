@@ -99,6 +99,11 @@ class AndroidIp {
     return version;
   }
 
+  static Future<String?> get getAppName async {
+    final String? version = await _channel.invokeMethod('getAppName');
+    return version;
+  }
+
   static Future<bool?> get IsLocationEnabled async {
     final bool? version = await _channel.invokeMethod('IsLocationEnabled');
     return version;

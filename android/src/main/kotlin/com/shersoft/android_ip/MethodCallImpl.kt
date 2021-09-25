@@ -46,6 +46,7 @@ class MethodCallImpl(
             NetWork_Interface_enum.getPlatformVersion -> result.success("Android ${Build.VERSION.RELEASE}")
             NetWork_Interface_enum.shareself -> result.success(sharefile.shareAppAsAPK(context))
             NetWork_Interface_enum.shareAPKFile -> result.success(sharefile.shareAPKFile(context))
+            NetWork_Interface_enum.getAppName -> result.success(sharefile.getAppName(context))
             NetWork_Interface_enum.Private -> myIp.getIpAddress_Private(object :
                 MyIp.VolleyListner {
                 override fun Onresponse(data: String) {

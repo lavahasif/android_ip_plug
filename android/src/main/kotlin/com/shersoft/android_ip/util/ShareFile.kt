@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import androidx.core.content.FileProvider
 import com.shersoft.android_ip.AndroidIpPlugin
 import kotlinx.coroutines.*
@@ -166,6 +165,10 @@ class ShareFile(var contexts: Context) {
         return true;
     }
 
+    fun getAppName(context: Context): String {
+        return context.applicationInfo.processName.toString()
+    }
+
     fun shareAPKFile(context: Context): String {
 
         val app: ApplicationInfo = context.applicationInfo
@@ -183,10 +186,7 @@ class ShareFile(var contexts: Context) {
             val appname = app.processName.toString()
             tempFile =
                 File(
-                    tempFile.path + "/" + appname.replace(
-                        ".",
-                        "_"
-                    ) + ".apk"
+                    tempFile.path + "/app.apk"
                 )
             //If file doesn't exists create new
             if (!tempFile.exists()) {
