@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.FileProvider
 import com.shersoft.android_ip.AndroidIpPlugin
 import kotlinx.coroutines.*
@@ -165,19 +166,24 @@ class ShareFile(var contexts: Context) {
         return true;
     }
 
-    fun shareAPKFile(context: Context): Boolean {
+    fun shareAPKFile(context: Context): String {
 
         val app: ApplicationInfo = context.applicationInfo
         val originalApk = app.publicSourceDir
-        var tempFile: File = File(contexts.getExternalCacheDir().toString() + "/ExtractedApk")
+        var tempFile: File = File(contexts.externalCacheDir?.path?.replace("/cache", "/files"))
+//        println(contexts.externalCacheDir?.path)
+//        contexts.externalCacheDir?.path?.let { Log.i("=====>", it) }
+//        println(contexts.filesDir.path)
+//        Log.i("=====>", contexts.filesDir.path)
         try {
 
             //If directory doesn't exists create new
-            if (!tempFile.isDirectory) if (!tempFile.mkdirs()) return false
+            if (!tempFile.isDirectory) if (!tempFile.mkdirs()) return ""
             //rename apk file to app name
+            val appname = app.processName.toString()
             tempFile =
                 File(
-                    tempFile.path + "/" + (app.processName.toString()).replace(
+                    tempFile.path + "/" + appname.replace(
                         ".",
                         "_"
                     ) + ".apk"
@@ -185,7 +191,7 @@ class ShareFile(var contexts: Context) {
             //If file doesn't exists create new
             if (!tempFile.exists()) {
                 if (!tempFile.createNewFile()) {
-                    return false;
+                    return "";
                 }
             }
             //Copy file to new location
@@ -198,11 +204,12 @@ class ShareFile(var contexts: Context) {
             }
             inp.close()
             out.close()
-
+            return appname;
         } catch (e: IOException) {
             e.printStackTrace()
+            return "";
         }
-        return true;
+
     }
 
 
