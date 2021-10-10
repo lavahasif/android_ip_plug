@@ -68,6 +68,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
 
     private lateinit var channel: MethodChannel
     private lateinit var echannel: EventChannel
+    private lateinit var ipScanlist: EventChannel
     private lateinit var echannellist: EventChannel
     private lateinit var Permissionchannel: EventChannel
     private lateinit var sharechannel: EventChannel
@@ -96,6 +97,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
 
 
         echannel = EventChannel(flutterPluginBinding.binaryMessenger, "networklistner")
+        ipScanlist = EventChannel(flutterPluginBinding.binaryMessenger, "ipscanlist")
         echannellist = EventChannel(flutterPluginBinding.binaryMessenger, "echannellist")
         sharechannel = EventChannel(flutterPluginBinding.binaryMessenger, "sharelistner")
         Permissionchannel = EventChannel(flutterPluginBinding.binaryMessenger, "permissionlistner")
@@ -108,6 +110,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
         mPermissionlistnerImp = PermissionlistnerImp(context)
         mSharelistnerImp = SharelistnerImp(context, sharefile)
         mConnectedDevicelist = ConnectedDevicelistimp(context, connecteddevice, myIp)
+        mipDevicelistimp = ipDevicelistimp(context, connecteddevice, myIp)
 
         channel.setMethodCallHandler(methodCallHandler)
         setEventChannel()
@@ -118,6 +121,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
     var mPermissionlistnerImp: PermissionlistnerImp? = null
     var mSharelistnerImp: SharelistnerImp? = null
     var mConnectedDevicelist: ConnectedDevicelistimp? = null
+    var mipDevicelistimp: ipDevicelistimp? = null
     var mPortScannerDevicelistimp: PortScannerDevicelistimp? = null
     private fun setEventChannel() {
 
@@ -127,6 +131,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
 
 
         echannel.setStreamHandler(mNetworkListnerImp)
+        ipScanlist.setStreamHandler(mipDevicelistimp)
         echannellist.setStreamHandler(mConnectedDevicelist)
 
         sharechannel.setStreamHandler(mSharelistnerImp)
@@ -149,6 +154,7 @@ class AndroidIpPlugin : FlutterPlugin, ActivityAware {
             context.unregisterReceiver(mNetworkListnerImp?.receiver)
         channel.setMethodCallHandler(null)
         echannel.setStreamHandler(null)
+        ipScanlist.setStreamHandler(null)
         echannellist.setStreamHandler(null)
         portbyCurrentchannel.setStreamHandler(null)
         portbyIpchannel.setStreamHandler(null)

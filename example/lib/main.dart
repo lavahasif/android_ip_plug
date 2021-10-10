@@ -49,6 +49,16 @@ class _MyAppState extends State<MyApp> {
       print(event);
     });
 
+    var arguments2 = {
+      'ip': '192.168.42.129',
+    };
+    var arguments = {
+      'ip': '148.72.210.101',
+    };
+    androidIp.onIpConnected(arguments)!.listen((event) {
+      print(event);
+    });
+
     listner!.listen((event) {
       setState(() {
         _Connecton_change = event;

@@ -14,10 +14,13 @@ class AndroidIp {
 
   static const EventChannel echannellist_channel =
       const EventChannel('echannellist');
+  static const EventChannel ipscanlist_channel =
+      const EventChannel('ipscanlist');
   static const EventChannel permissionlist_channel =
       const EventChannel('permissionlistner');
   Stream<String>? _onConnectivityChanged;
   Stream<String>? _onDeviceConnected;
+  Stream<String>? _onIpConnected;
   Stream<String>? _onShareProcess;
   Stream<String>? _onportbyCurrent;
   Stream<PermissionResult>? _onPermissionChanged;
@@ -76,6 +79,13 @@ class AndroidIp {
         .receiveBroadcastStream()
         .map((event) => event.toString());
     return _onDeviceConnected;
+  }
+
+  Stream<String>? onIpConnected(arguments) {
+    _onIpConnected = ipscanlist_channel
+        .receiveBroadcastStream(arguments)
+        .map((event) => event.toString());
+    return _onIpConnected;
   }
 
   Stream<String>? get onShared {
