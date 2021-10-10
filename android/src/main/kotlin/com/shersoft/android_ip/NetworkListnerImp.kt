@@ -15,7 +15,7 @@ import io.flutter.plugin.common.EventChannel.StreamHandler
 
 class NetworkListnerImp(val context: Context) : StreamHandler {
     lateinit var mybroadcastListlistner: AndroidIpPlugin.mybroadcastList
-    public lateinit var receiver: NetworkChangeReceiver
+    var receiver: NetworkChangeReceiver?=null;
     val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION).apply {
         addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
         addAction("android.net.wifi.WIFI_AP_STATE_CHANGED")

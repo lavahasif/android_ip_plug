@@ -404,6 +404,13 @@ class MyIp(var contexts: Context) {
                     if (getdeviceIpAddress_Wifi()?.contains("null") == true)
                         if (it.key.contains("wlan0")) return it.value
                 }
+            } else if (key.contains("rndis")) {
+                networkIp4LoopbackIps.forEach {
+                    if (it.key.contains("rndis")) return it.value
+
+                    if (it.key.contains("usb")) return it.value
+                }
+                return networkIp4LoopbackIps.getValue(keys)
             }
             return networkIp4LoopbackIps.getValue(keys)
         } catch (e: Exception) {

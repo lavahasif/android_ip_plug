@@ -1,6 +1,6 @@
 name: android_util
 description: This package currently only for android for getting different ip depend on network interface.Android util
-version: 0.0.1
+version: 0.0.3
 homepage: https://github.com/lavahasif/flutter_android_ip_plugin
 #publish_to: none
 
@@ -62,3 +62,5 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages
+#  flutter pub publish --dry-run
+#  flutter pub publish
