@@ -282,6 +282,7 @@ open class ConnectedDevice(var contexts: Context) {
         var timeout = timeout
         val runtime = Runtime.getRuntime()
         timeout /= 1000
+
         val cmd = "ping -c 1 -W $timeout $host"
         val proc = runtime.exec(cmd)
 //        Log.d("===========>", cmd)
@@ -293,7 +294,11 @@ open class ConnectedDevice(var contexts: Context) {
         map { async { f(it) } }.awaitAll()
     }
 
-    fun gethostData(host: String, iDeviceConnected: AndroidIpPlugin.IDeviceConnected) {
+    fun gethostData(
+        host: String,
+        timeout: Int = 5000,
+        iDeviceConnected: AndroidIpPlugin.IDeviceConnected
+    ) {
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         val split: MutableList<String> = host.split(".") as MutableList<String>
 
@@ -312,7 +317,7 @@ open class ConnectedDevice(var contexts: Context) {
 
                 var ips = ip + "$it";
 
-                if (pingHost(ips, 1000) == 0) {
+                if (pingHost(ips, timeout) == 0) {
 //                    println("Connection============>$ips")
                     iDeviceConnected.DeviceConnected(ips);
 //                Log.i("Connection=======>", "$ips".toString())

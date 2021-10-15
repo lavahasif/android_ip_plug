@@ -19,7 +19,7 @@ class ConnectedDevicelistimp(
     val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
 
-        connecteddevice.gethostData(myIp.getDeviceIpAddress(), object :
+        connecteddevice.gethostData(myIp.getDeviceIpAddress(), 2000, object :
             AndroidIpPlugin.IDeviceConnected {
             override fun DeviceConnected(ip: String) {
 //                        println("Event============>$ip")
@@ -50,9 +50,11 @@ class ipDevicelistimp(
         val hashMap = arguments as HashMap<String, String>
 
         var ip: String = hashMap["ip"].toString();
+        var timeout = hashMap["timeout"].toString().toInt();
+        print(timeout)
 
         if (ip != "")
-            connecteddevice.gethostData(ip, object :
+            connecteddevice.gethostData(ip, timeout, object :
                 AndroidIpPlugin.IDeviceConnected {
                 override fun DeviceConnected(ip: String) {
 //                        println("Event============>$ip")

@@ -51,12 +51,14 @@ class _MyAppState extends State<MyApp> {
 
     var arguments2 = {
       'ip': '192.168.42.129',
+
     };
     var arguments = {
       'ip': '148.72.210.101',
+      'timeout':'10000'
     };
     androidIp.onIpConnected(arguments)!.listen((event) {
-      print(event);
+      print("============>"+event);
     });
 
     listner!.listen((event) {
